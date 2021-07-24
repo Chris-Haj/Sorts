@@ -1,7 +1,9 @@
 import java.util.Arrays;
+import java.util.Hashtable;
 import java.util.OptionalInt;
+import java.util.Stack;
 
-public class Sorts {
+public class Sorts extends Exception{
 
     public static void Merge(int[] a, int l, int r){
 
@@ -53,6 +55,38 @@ public class Sorts {
         }
     }
 
+    public static void MergeSorty(int[] a, int l, int r){
+        if(l<r){
+            int mid=l+(r-l)/2;
+            MergeSorty(a,l,mid);
+            MergeSorty(a,mid+1,r);
+            Mergey(a,l,mid,r);
+        }
+    }
+
+    public static void Mergey(int[] a, int l, int mid, int r){
+        int lefty= mid-l+1;
+        int righty= r-mid;
+        int[] Lside = new int[lefty];
+        int[] Rside = new int[righty];
+        for(int i=0;i<lefty;i++)
+            Lside[i]=a[l+i];
+        for(int i=0;i<righty;i++)
+            Rside[i]=a[mid+1+i];
+        int i=0,j=0,k=l;
+        while(i<lefty&&j<righty){
+            if(Lside[i]<Rside[j])
+                a[k++]=Lside[i++];
+            else
+                a[k++]=Rside[++j];
+        }
+        while(i<lefty)
+            a[k++]=Lside[i++];
+        while(j<righty)
+            a[k++]=Rside[j++];
+
+    }
+
     public static void quicksort(int[] a, int l, int r){
 
         if(l<r){
@@ -94,10 +128,6 @@ public class Sorts {
             for(int i=1;i<=max;i++){
                 count[i]+=count[i-1];
             }
-//            for(int i=max;i>0;i--){
-//                count[i]=count[i-1];
-//            }
-//            count[0]=0;
             for(int i=a.length-1;i>=0;i--){
                 output[count[a[i]]-1]=a[i];
                 count[a[i]]--;
@@ -116,11 +146,67 @@ public class Sorts {
         return max;
     }
 
-    public static void main(String[] args) {
-        int[] a = {3,6,8,2,1,9,5};
-//        Merge(a,0,a.length-1);
-        counting(a);
-        System.out.println(Arrays.toString(a));
+
+    public static void counter(int[] a){
+        int max =max(a);
+        int[] count = new int[max+1];
+        for(int i=0;i<a.length;i++){
+            count[a[i]]++;
+        }
+        System.out.println(Arrays.toString(count));
+        for(int i=0;i<count.length-1;i++)
+            count[i+1]+=count[i];
+        int[] out = new int[a.length];
+        System.out.println(Arrays.toString(count));
+        for(int i=0;i<a.length;i++){
+            out[count[a[i]]-1]=a[i];
+            count[a[i]]--;
+        }
+        for(int i=0;i<a.length;i++)
+            a[i]=out[i];
     }
+
+    public static boolean check(int[] a, int k){
+        Hashtable<Integer,Integer> hash = new Hashtable<>(a.length);
+        for(int i=0;i<a.length;i++){
+            if(hash.containsKey(a[i])) {
+                int count =hash.get(a[i]);
+                hash.put(a[i],count+1);
+            }
+            else
+                hash.put(a[i],1);
+        }
+        System.out.println(hash.toString());
+        for(Integer i : hash.values()){
+            if(i==k) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static void main(String[] args) {
+        int[] a={5,5,3,7,5,1,8,3,2};
+        System.out.println(check(a,3));
+    }
+
+
+//    public static void InOrder(Node root) {
+//        Stack<Node> s = new Stack<>();
+//        Node cur=root;
+//        while(cur != null || !s.isEmpty()){
+//            while(cur != null) {
+//                s.push(cur);
+//                cur = cur.getLeft();
+//            }
+//
+//            cur = s.pop();
+//            System.out.print(cur.data + " ");
+//            cur = cur.getRight();
+//        }
+//    }
+
+
+
 
 }
